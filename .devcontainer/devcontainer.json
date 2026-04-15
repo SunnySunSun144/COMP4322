@@ -1,0 +1,14 @@
+{
+  "name": "COMP4322",
+  "runArgs": [
+    "--volume=/tmp/.X11-unix:/tmp/.X11-unix:rw"
+  ],
+  "containerEnv": {
+    "DISPLAY": "${localEnv:DISPLAY}",
+    "XAUTHORITY": "/tmp/.Xauthority"
+  },
+  "mounts": [
+    "source=${localEnv:XAUTHORITY},target=/tmp/.Xauthority,type=bind,readonly"
+  ],
+  "postStartCommand": "bash -lc 'echo DISPLAY=$DISPLAY; ls -l /tmp/.X11-unix || true'"
+}

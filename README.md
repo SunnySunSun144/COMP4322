@@ -47,6 +47,21 @@ javac *.java
 java -cp . LSRComputeGUI
 ```
 
+### Run GUI (Host X11 Forwarding)
+```bash
+./scripts/run-gui-host-x11.sh
+```
+
+### Run GUI (Browser via noVNC)
+```bash
+./scripts/run-gui-novnc.sh
+```
+
+Then open:
+```text
+http://127.0.0.1:6080/vnc.html
+```
+
 ### Run CLI - Compute-All
 ```bash
 java -cp . LSRCompute ../data/routes.lsa A CA
@@ -80,6 +95,8 @@ COMP4322/
 3. Choose source node from dropdown
 4. Click "Single Step" for interactive mode or "Compute All" for batch
 5. Manage topology with Add/Remove nodes and links
+
+For containers where direct X11 is not available, use `./scripts/run-gui-novnc.sh` and connect in the browser.
 
 ### CLI Mode
 ```bash
