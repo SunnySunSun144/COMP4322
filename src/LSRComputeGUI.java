@@ -29,6 +29,8 @@ public class LSRComputeGUI extends JFrame {
     private JTextField linkToField;
     private JTextField linkCostField;
     private JTextField linkBreakField;
+    private JButton saveBtn;
+    private String currentFilePath;
 
     public LSRComputeGUI() {
         setTitle("Link State Routing (LSR) Computation");
@@ -37,6 +39,7 @@ public class LSRComputeGUI extends JFrame {
         setLocationRelativeTo(null);
 
         graph = new Graph();
+        currentFilePath = null;
         initializeGUI();
     }
 
@@ -84,6 +87,11 @@ public class LSRComputeGUI extends JFrame {
         loadFileBtn = new JButton("Load File");
         loadFileBtn.addActionListener(e -> loadFile());
         panel.add(loadFileBtn);
+
+        saveBtn = new JButton("Save");
+        saveBtn.addActionListener(e -> saveFile());
+        saveBtn.setEnabled(false);
+        panel.add(saveBtn);
 
         panel.add(new JLabel("Source Node:"));
         sourceNodeCombo = new JComboBox<>();
@@ -229,17 +237,34 @@ public class LSRComputeGUI extends JFrame {
 
         if (result == JFileChooser.APPROVE_OPTION) {
             try {
-                graph = LSAFileParser.parseFile(chooser.getSelectedFile().getAbsolutePath());
+                currentFilePath = chooser.getSelectedFile().getAbsolutePath();
+                graph = LSAFileParser.parseFile(currentFilePath);
                 updateTopologyDisplay();
                 updateSourceNodeCombo();
                 singleStepBtn.setEnabled(true);
                 computeAllBtn.setEnabled(true);
+                saveBtn.setEnabled(true);
                 dijkstra = null;
                 graphVisualizationPanel.updateDijkstraState(null);
                 currentStepLabel.setText("Status: File loaded successfully");
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this, "Error loading file: " + e.getMessage());
             }
+        }
+    }
+
+    private void saveFile() {
+        if (currentFilePath == null || currentFilePath.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No file loaded. Please load a file first.");
+            return;
+        }
+
+        try {
+            LSAFileParser.writeFile(currentFilePath, graph);
+            currentStepLabel.setText("Status: File saved successfully to " + new java.io.File(currentFilePath).getName());
+            JOptionPane.showMessageDialog(this, "Topology saved successfully!");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error saving file: " + e.getMessage());
         }
     }
 
